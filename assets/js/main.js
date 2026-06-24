@@ -103,6 +103,20 @@
     });
   });
 
+  /* ---- Newsletter (client-side success state) ---- */
+  const nlForm = document.getElementById('newsletterForm');
+  if (nlForm) {
+    nlForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = nlForm.querySelector('input[type="email"]');
+      if (!email || !email.value || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.value)) {
+        email && email.focus();
+        return;
+      }
+      nlForm.innerHTML = '<div class="flex items-center gap-2.5 px-5 py-3.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-sm font-medium"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Thanks for subscribing! We\'ll be in touch.</div>';
+    });
+  }
+
   /* ---- Subtle pointer tilt on [data-tilt] ---- */
   if (window.matchMedia('(pointer:fine)').matches) {
     document.querySelectorAll('[data-tilt]').forEach((el) => {

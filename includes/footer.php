@@ -1,18 +1,25 @@
 </main>
 
+<?php
+// Top categories for footer links (safe even if table is empty)
+$footerCats = [];
+try { $footerCats = db()->query("SELECT name, slug FROM categories ORDER BY name LIMIT 5")->fetchAll(); } catch (Throwable $e) {}
+?>
+
 <!-- CTA strip -->
 <section class="bg-white">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 pb-2">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pb-4">
     <div class="reveal relative overflow-hidden rounded-[28px] bg-ink px-6 py-14 sm:px-14 sm:py-16">
       <div class="hero-aurora"><span></span><span></span><span></span></div>
       <div class="absolute inset-0 bg-dots opacity-30"></div>
       <div class="relative grid lg:grid-cols-2 gap-8 items-center">
         <div>
-          <h2 class="font-display text-3xl sm:text-4xl font-bold text-white tracking-tightest">Ready to upgrade your career?</h2>
+          <span class="inline-flex items-center gap-2 text-sm font-semibold text-brand-300"><?= icon('rocket','w-4 h-4') ?> Start today</span>
+          <h2 class="mt-3 font-display text-3xl sm:text-4xl font-bold text-white tracking-tightest">Ready to upgrade your career?</h2>
           <p class="mt-3 text-slate-300 max-w-md">Book a free counselling session and find the program that fits your goals.</p>
         </div>
         <div class="flex flex-col sm:flex-row gap-3 lg:justify-end">
-          <a href="<?= url('contact.php') ?>" class="btn-shine inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white text-ink font-semibold hover:bg-brand-50 transition">Book Free Demo</a>
+          <a href="<?= url('contact.php') ?>" class="btn-shine inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white text-ink font-semibold hover:bg-brand-50 transition">Book Free Demo <?= icon('arrow-right','w-4 h-4') ?></a>
           <a href="tel:<?= e(setting('phone')) ?>" class="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-white/10 border border-white/20 text-white font-semibold hover:bg-white/15 transition backdrop-blur"><?= icon('phone','w-4 h-4') ?> Call Now</a>
         </div>
       </div>
@@ -20,54 +27,87 @@
   </div>
 </section>
 
-<footer class="bg-white pt-16 pb-10 border-t border-slate-100 mt-8">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-12">
+<footer class="relative bg-ink text-slate-400 overflow-hidden mt-8">
+  <div class="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-brand-500/60 to-transparent"></div>
+  <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-brand-600/10 blur-3xl rounded-full pointer-events-none"></div>
+
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-10">
+    <!-- Newsletter -->
+    <div class="grid lg:grid-cols-2 gap-8 items-center pb-12 border-b border-white/10">
+      <div>
+        <h3 class="font-display text-2xl font-bold text-white tracking-tightest">Get course updates &amp; offers</h3>
+        <p class="mt-2 text-sm text-slate-400 max-w-md">Join our newsletter for new batches, scholarships and free workshops. No spam, ever.</p>
+      </div>
+      <form id="newsletterForm" class="flex flex-col sm:flex-row gap-3 lg:justify-end" novalidate>
+        <div class="relative flex-1 max-w-md">
+          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"><?= icon('mail','w-5 h-5') ?></span>
+          <input type="email" name="email" required placeholder="Enter your email" class="w-full pl-12 pr-4 py-3.5 rounded-full bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+        </div>
+        <button class="btn-shine inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white text-ink font-semibold hover:bg-brand-50 transition whitespace-nowrap">Subscribe <?= icon('send','w-4 h-4') ?></button>
+      </form>
+    </div>
+
+    <!-- Columns -->
+    <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-12 py-12">
       <div class="lg:col-span-4">
         <a href="<?= url('index.php') ?>" class="flex items-center gap-2.5 mb-4">
           <span class="grid place-items-center w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-violet-600 text-white font-display font-bold text-lg">N</span>
-          <span class="font-display font-bold text-xl text-ink tracking-tightest"><?= e(setting('site_name')) ?></span>
+          <span class="font-display font-bold text-xl text-white tracking-tightest"><?= e(setting('site_name')) ?></span>
         </a>
-        <p class="text-sm leading-relaxed text-slate-500 max-w-xs"><?= e(setting('about_short')) ?></p>
-        <div class="flex gap-2.5 mt-6">
-          <?php foreach (['facebook','instagram','linkedin','youtube'] as $k): ?>
-            <a href="<?= e(setting($k, '#')) ?>" target="_blank" rel="noopener" aria-label="<?= e($k) ?>" class="grid place-items-center w-10 h-10 rounded-xl bg-slate-100 text-slate-500 hover:bg-ink hover:text-white transition"><?= icon($k,'w-[18px] h-[18px]') ?></a>
-          <?php endforeach; ?>
+        <p class="text-sm leading-relaxed text-slate-400 max-w-xs"><?= e(setting('about_short')) ?></p>
+        <div class="flex flex-wrap gap-2 mt-6">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-slate-300"><?= icon('shield-check','w-3.5 h-3.5 text-emerald-400') ?> Verified certificates</span>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-slate-300"><?= icon('star','w-3.5 h-3.5 text-amber-400') ?> <?= e(setting('hero_stat_rating')) ?> rated</span>
         </div>
       </div>
 
       <div class="lg:col-span-2">
-        <h4 class="text-ink font-semibold mb-4 text-sm">Explore</h4>
-        <ul class="space-y-3 text-sm text-slate-500">
-          <li><a href="<?= url('courses.php') ?>" class="hover:text-brand-600 transition">All Courses</a></li>
-          <li><a href="<?= url('projects.php') ?>" class="hover:text-brand-600 transition">Student Projects</a></li>
-          <li><a href="<?= url('about.php') ?>" class="hover:text-brand-600 transition">About Us</a></li>
-          <li><a href="<?= url('contact.php') ?>" class="hover:text-brand-600 transition">Contact</a></li>
+        <h4 class="text-white font-semibold mb-4 text-sm">Courses</h4>
+        <ul class="space-y-3 text-sm">
+          <?php foreach ($footerCats as $fc): ?>
+            <li><a href="<?= url('courses.php?cat=' . urlencode($fc['slug'])) ?>" class="hover:text-white transition"><?= e($fc['name']) ?></a></li>
+          <?php endforeach; ?>
+          <li><a href="<?= url('courses.php') ?>" class="text-brand-300 hover:text-brand-200 transition font-medium">All courses →</a></li>
         </ul>
       </div>
 
       <div class="lg:col-span-2">
-        <h4 class="text-ink font-semibold mb-4 text-sm">Portals</h4>
-        <ul class="space-y-3 text-sm text-slate-500">
-          <li><a href="<?= url('student/login.php') ?>" class="hover:text-brand-600 transition">Student Login</a></li>
-          <li><a href="<?= url('admin/login.php') ?>" class="hover:text-brand-600 transition">Admin Login</a></li>
-          <li><a href="<?= url('verify.php') ?>" class="hover:text-brand-600 transition">Verify Certificate</a></li>
+        <h4 class="text-white font-semibold mb-4 text-sm">Company</h4>
+        <ul class="space-y-3 text-sm">
+          <li><a href="<?= url('about.php') ?>" class="hover:text-white transition">About Us</a></li>
+          <li><a href="<?= url('projects.php') ?>" class="hover:text-white transition">Student Projects</a></li>
+          <li><a href="<?= url('verify.php') ?>" class="hover:text-white transition">Verify Certificate</a></li>
+          <li><a href="<?= url('contact.php') ?>" class="hover:text-white transition">Contact</a></li>
         </ul>
       </div>
 
-      <div class="lg:col-span-4">
-        <h4 class="text-ink font-semibold mb-4 text-sm">Get in touch</h4>
-        <ul class="space-y-3 text-sm text-slate-500">
-          <li><a href="tel:<?= e(setting('phone')) ?>" class="flex items-start gap-3 hover:text-brand-600 transition"><span class="text-brand-500 mt-0.5"><?= icon('phone','w-4 h-4') ?></span><?= e(setting('phone')) ?></a></li>
-          <li><a href="mailto:<?= e(setting('email')) ?>" class="flex items-start gap-3 hover:text-brand-600 transition"><span class="text-brand-500 mt-0.5"><?= icon('mail','w-4 h-4') ?></span><?= e(setting('email')) ?></a></li>
-          <li class="flex items-start gap-3"><span class="text-brand-500 mt-0.5"><?= icon('map-pin','w-4 h-4') ?></span><?= e(setting('address')) ?></li>
+      <div class="lg:col-span-2">
+        <h4 class="text-white font-semibold mb-4 text-sm">Portals</h4>
+        <ul class="space-y-3 text-sm">
+          <li><a href="<?= url('student/login.php') ?>" class="hover:text-white transition">Student Login</a></li>
+          <li><a href="<?= url('admin/login.php') ?>" class="hover:text-white transition">Admin Login</a></li>
+        </ul>
+      </div>
+
+      <div class="lg:col-span-2">
+        <h4 class="text-white font-semibold mb-4 text-sm">Contact</h4>
+        <ul class="space-y-3 text-sm">
+          <li><a href="tel:<?= e(setting('phone')) ?>" class="flex items-start gap-2.5 hover:text-white transition"><span class="text-brand-400 mt-0.5"><?= icon('phone','w-4 h-4') ?></span><?= e(setting('phone')) ?></a></li>
+          <li><a href="mailto:<?= e(setting('email')) ?>" class="flex items-start gap-2.5 hover:text-white transition break-all"><span class="text-brand-400 mt-0.5"><?= icon('mail','w-4 h-4') ?></span><?= e(setting('email')) ?></a></li>
+          <li class="flex items-start gap-2.5"><span class="text-brand-400 mt-0.5"><?= icon('map-pin','w-4 h-4') ?></span><span><?= e(setting('address')) ?></span></li>
         </ul>
       </div>
     </div>
 
-    <div class="mt-12 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
-      <p>&copy; <?= date('Y') ?> <?= e(setting('site_name')) ?>. All rights reserved.</p>
-      <p class="flex items-center gap-1.5">Crafted with <span class="text-rose-400"><?= icon('heart','w-3.5 h-3.5') ?></span> · Built on PHP &amp; MySQL</p>
+    <!-- Bottom bar -->
+    <div class="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-xs text-slate-500 order-2 sm:order-1">&copy; <?= date('Y') ?> <?= e(setting('site_name')) ?>. All rights reserved.</p>
+      <div class="flex items-center gap-2 order-1 sm:order-2">
+        <?php foreach (['facebook','instagram','linkedin','youtube'] as $k): ?>
+          <a href="<?= e(setting($k, '#')) ?>" target="_blank" rel="noopener" aria-label="<?= e($k) ?>" class="grid place-items-center w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:bg-white hover:text-ink transition"><?= icon($k,'w-[18px] h-[18px]') ?></a>
+        <?php endforeach; ?>
+      </div>
+      <p class="text-xs text-slate-500 order-3 flex items-center gap-1.5">Built with <span class="text-rose-400"><?= icon('heart','w-3.5 h-3.5') ?></span> on PHP &amp; MySQL</p>
     </div>
   </div>
 </footer>
