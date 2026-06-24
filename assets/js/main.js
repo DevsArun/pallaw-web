@@ -1,47 +1,68 @@
 // ============================================================
-//  Nexora Institute - frontend interactions
+//  Nexora Institute — premium frontend interactions
 // ============================================================
 (function () {
   'use strict';
 
-  // Mobile menu toggle
-  const menuBtn = document.getElementById('menuBtn');
-  const mobileMenu = document.getElementById('mobileMenu');
-  if (menuBtn && mobileMenu) {
-    menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-  }
+  /* ---- Mobile menu (slide-in panel) ---- */
+  const menuBtn   = document.getElementById('menuBtn');
+  const menu      = document.getElementById('mobileMenu');
+  const panel     = document.getElementById('mmPanel');
+  const overlay   = document.getElementById('mmOverlay');
+  const closeBtn  = document.getElementById('menuClose');
 
-  // Navbar shadow on scroll
+  function openMenu() {
+    if (!menu) return;
+    menu.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => panel && panel.classList.remove('translate-x-full'));
+  }
+  function closeMenu() {
+    if (!menu) return;
+    panel && panel.classList.add('translate-x-full');
+    document.body.style.overflow = '';
+    setTimeout(() => menu.classList.add('hidden'), 300);
+  }
+  menuBtn  && menuBtn.addEventListener('click', openMenu);
+  closeBtn && closeBtn.addEventListener('click', closeMenu);
+  overlay  && overlay.addEventListener('click', closeMenu);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+
+  /* ---- Navbar background on scroll ---- */
   const navbar = document.getElementById('navbar');
-  if (navbar) {
-    const onScroll = () => {
-      if (window.scrollY > 10) {
-        navbar.classList.add('shadow-lg', 'shadow-slate-900/5');
-      } else {
-        navbar.classList.remove('shadow-lg', 'shadow-slate-900/5');
-      }
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-  }
+  const navbg  = document.getElementById('navbg');
+  const onScroll = () => {
+    const scrolled = window.scrollY > 8;
+    if (navbar) navbar.classList.toggle('border-slate-200/70', scrolled);
+    if (navbg)  navbg.classList.toggle('shadow-sm', scrolled);
+    const toTop = document.getElementById('toTop');
+    if (toTop) {
+      const show = window.scrollY > 600;
+      toTop.classList.toggle('opacity-0', !show);
+      toTop.classList.toggle('pointer-events-none', !show);
+    }
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 
-  // Reveal on scroll
+  /* ---- Back to top ---- */
+  const toTop = document.getElementById('toTop');
+  toTop && toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  /* ---- Reveal on scroll ---- */
   const reveals = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window && reveals.length) {
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in');
-          io.unobserve(entry.target);
-        }
+        if (entry.isIntersecting) { entry.target.classList.add('in'); io.unobserve(entry.target); }
       });
-    }, { threshold: 0.12 });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
     reveals.forEach((el) => io.observe(el));
   } else {
     reveals.forEach((el) => el.classList.add('in'));
   }
 
-  // Count-up stats
+  /* ---- Count-up stats ---- */
   const counters = document.querySelectorAll('[data-count]');
   if ('IntersectionObserver' in window && counters.length) {
     const cio = new IntersectionObserver((entries) => {
@@ -50,13 +71,13 @@
         const el = entry.target;
         const target = parseFloat(el.dataset.count);
         const suffix = el.dataset.suffix || '';
-        const dur = 1400;
-        const start = performance.now();
+        const prefix = el.dataset.prefix || '';
+        const dur = 1500, start = performance.now();
         const step = (now) => {
           const p = Math.min((now - start) / dur, 1);
           const eased = 1 - Math.pow(1 - p, 3);
           const val = target * eased;
-          el.textContent = (target % 1 === 0 ? Math.floor(val).toLocaleString() : val.toFixed(1)) + suffix;
+          el.textContent = prefix + (target % 1 === 0 ? Math.floor(val).toLocaleString('en-IN') : val.toFixed(1)) + suffix;
           if (p < 1) requestAnimationFrame(step);
         };
         requestAnimationFrame(step);
@@ -66,13 +87,32 @@
     counters.forEach((el) => cio.observe(el));
   }
 
-  // FAQ accordion
+  /* ---- FAQ accordion ---- */
   document.querySelectorAll('[data-faq]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const panel = btn.nextElementSibling;
-      const icon = btn.querySelector('[data-faq-icon]');
-      panel.classList.toggle('hidden');
-      if (icon) icon.classList.toggle('rotate-45');
+      const icon  = btn.querySelector('[data-faq-icon]');
+      const open  = !panel.style.maxHeight || panel.style.maxHeight === '0px';
+      // close siblings
+      document.querySelectorAll('[data-faq] + div').forEach((p) => { p.style.maxHeight = '0px'; });
+      document.querySelectorAll('[data-faq-icon]').forEach((i) => i.classList.remove('rotate-45'));
+      if (open) {
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+        icon && icon.classList.add('rotate-45');
+      }
     });
   });
+
+  /* ---- Subtle pointer tilt on [data-tilt] ---- */
+  if (window.matchMedia('(pointer:fine)').matches) {
+    document.querySelectorAll('[data-tilt]').forEach((el) => {
+      el.addEventListener('mousemove', (e) => {
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        el.style.transform = `perspective(900px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`;
+      });
+      el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+    });
+  }
 })();
