@@ -1,0 +1,13 @@
+# Local config overrides (keep DB passwords out of git)
+config/config.local.php
+
+# Uploaded files
+assets/uploads/courses/*
+assets/uploads/students/*
+!assets/uploads/courses/.gitkeep
+!assets/uploads/students/.gitkeep
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log

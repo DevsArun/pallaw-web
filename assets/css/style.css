@@ -1,0 +1,70 @@
+/* ============================================================
+   Nexora Institute - custom styles & animations
+   (Tailwind handles utilities via CDN; this adds the polish)
+   ============================================================ */
+
+:root {
+  --brand: #4f46e5;
+  --brand-light: #818cf8;
+}
+
+html { -webkit-tap-highlight-color: transparent; }
+
+/* Smooth custom scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #c7d2fe; border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: var(--brand-light); }
+
+/* Gradient text helper */
+.text-gradient {
+  background: linear-gradient(120deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Animated mesh / aurora background for hero */
+.hero-aurora {
+  position: absolute; inset: 0; overflow: hidden; z-index: 0;
+}
+.hero-aurora span {
+  position: absolute; border-radius: 9999px; filter: blur(80px); opacity: .55;
+  animation: blob 16s infinite ease-in-out;
+}
+.hero-aurora span:nth-child(1){ width:480px;height:480px;background:#6366f1;top:-120px;left:-80px;}
+.hero-aurora span:nth-child(2){ width:420px;height:420px;background:#a855f7;top:40px;right:-100px;animation-delay:-4s;}
+.hero-aurora span:nth-child(3){ width:380px;height:380px;background:#22d3ee;bottom:-140px;left:30%;animation-delay:-8s;}
+
+@keyframes blob {
+  0%,100% { transform: translate(0,0) scale(1); }
+  33% { transform: translate(40px,-30px) scale(1.1); }
+  66% { transform: translate(-30px,20px) scale(.95); }
+}
+
+/* Reveal-on-scroll */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+.reveal.in { opacity: 1; transform: none; }
+
+/* Card hover lift */
+.card-lift { transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s; }
+.card-lift:hover { transform: translateY(-6px); box-shadow: 0 24px 50px -20px rgba(79,70,229,.35); }
+
+/* Marquee for partner logos */
+.marquee { display:flex; gap:3rem; width:max-content; animation: scrollx 28s linear infinite; }
+@keyframes scrollx { to { transform: translateX(-50%); } }
+
+/* Grid pattern background */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(99,102,241,.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(99,102,241,.07) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Print: certificates & receipts */
+@media print {
+  .no-print { display: none !important; }
+  body { background: #fff !important; }
+  .print-area { box-shadow: none !important; margin: 0 !important; }
+}
