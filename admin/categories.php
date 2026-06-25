@@ -48,6 +48,7 @@ admin_layout_top('categories', 'Categories');
 
   <!-- List -->
   <div class="lg:col-span-2 rounded-2xl bg-white border border-slate-100 overflow-hidden">
+    <div class="overflow-x-auto">
     <table class="w-full text-sm">
       <thead class="bg-slate-50 text-slate-500 text-left"><tr><th class="px-5 py-3 font-semibold">Name</th><th class="px-5 py-3 font-semibold">Slug</th><th class="px-5 py-3 font-semibold">Courses</th><th class="px-5 py-3 font-semibold text-right">Actions</th></tr></thead>
       <tbody class="divide-y divide-slate-100">
@@ -65,6 +66,7 @@ admin_layout_top('categories', 'Categories');
         <?php if(!$cats): ?><tr><td colspan="4" class="px-5 py-10 text-center text-slate-400">No categories yet.</td></tr><?php endif; ?>
       </tbody>
     </table>
+    </div>
   </div>
 </div>
 <?php admin_layout_bottom(); ?>
